@@ -1,0 +1,34 @@
+[
+    {
+        "keyword": "Montreal, Quebec",
+        "year": 2020,
+        "options": {
+            "electricity": 0,
+            "heating": 0,
+            "internet": 0,
+            "storageLocker": 0,
+            "furnished": 0,
+            "elevator": 0,
+            "airConditioning": 0,
+            "totalElectro": 0,
+            "totalInteriorParking": 0,
+            "totalExteriorParking": 0
+        }
+    },
+    {
+        "keyword": "Quebec City, Quebec",
+        "year": 2020,
+        "options": {
+            "electricity": 0,
+            "heating": 0,
+            "internet": 0,
+            "storageLocker": 0,
+            "furnished": 0,
+            "elevator": 0,
+            "airConditioning": 0,
+            "totalElectro": 0,
+            "totalInteriorParking": 0,
+            "totalExteriorParking": 0
+        }
+    }
+]
