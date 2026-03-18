@@ -99,6 +99,7 @@ class ZipplexSession(Session):
 
     def request(self, method, url, **kwargs) -> Response:
         retried = kwargs.pop("_retried", False)
+        skip_auth_refresh = kwargs.pop("_skip_auth_refresh", False)
 
         # Human-like delay to prevent "Connection Reset by Peer" bot detection
         time.sleep(random.uniform(0.5, 1.5))
@@ -110,10 +111,11 @@ class ZipplexSession(Session):
                 print(f"Connection reset. Waiting 3s and retrying...")
                 time.sleep(3)
                 kwargs["_retried"] = True
+                kwargs["_skip_auth_refresh"] = skip_auth_refresh
                 return self.request(method, url, **kwargs)
             raise e
 
-        if res.status_code in self.expired_status_codes:
+        if not skip_auth_refresh and res.status_code in self.expired_status_codes:
             if retried:
                 raise Exception(f"Auth failed with {res.status_code} after retry.")
 
@@ -121,6 +123,7 @@ class ZipplexSession(Session):
             new_headers = self.refresh_callback()
             kwargs.setdefault("headers", {}).update(new_headers)
             kwargs["_retried"] = True
+            kwargs["_skip_auth_refresh"] = skip_auth_refresh
             return self.request(method, url, **kwargs)
 
         return res
@@ -154,7 +157,12 @@ class Zipplex:
     def refresh_token(self):
         print("Refreshing session token...")
         url = 'https://zipplex.ca/api/SignIn/refresh-token'
-        res = self.session.post(url, headers=self.auth_headers)
+        res = self.session.post(url, headers=self.auth_headers, _skip_auth_refresh=True)
+        if res.status_code == 401:
+            raise Exception(
+                "Refresh token is expired or invalid. "
+                "Please update the ZIPPLEX_REFRESH_TOKEN secret with a fresh token."
+            )
         res.raise_for_status()
         self.session.cookies.set("jwt", res.json()['token'])
 
