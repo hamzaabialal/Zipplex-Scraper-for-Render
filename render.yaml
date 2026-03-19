@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: zipplex-scraper
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn api:app --host 0.0.0.0 --port $PORT
+    plan: free
+    envVars:
+      - key: MAPBOX_SESSION_TOKEN
+        sync: false
+      - key: MAPBOX_ACCESS_TOKEN
+        sync: false
+      - key: ZIPPLEX_REFRESH_TOKEN
+        sync: false
+      - key: GOOGLE_CREDENTIALS
+        sync: false
+      - key: GOOGLE_SHEET_ID
+        sync: false
